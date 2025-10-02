@@ -1,0 +1,10 @@
+%% Activity Diagram - Course Enrollment
+flowchart TD
+  start([Start]) --> browse[Browse Course]
+  browse --> clickEnroll[Click Enroll]
+  clickEnroll --> createCheckout[Create Stripe Checkout]
+  createCheckout --> redirect[Redirect to Stripe]
+  redirect --> pay[Complete Payment]
+  pay --> webhook[Stripe Webhook Received]
+  webhook --> activate[Activate Enrollment]
+  activate --> success([Access Granted])

@@ -1,0 +1,25 @@
+%% Use Case Diagram (Mermaid)
+%% Actors: Visitor, Student, Admin
+flowchart TB
+  actorVisitor([Visitor])
+  actorStudent([Student])
+  actorAdmin([Admin])
+
+  subgraph System[Masterji LMS]
+    UC_Browse((Browse Courses))
+    UC_Register((Register/Login via OTP))
+    UC_Enroll((Enroll & Pay))
+    UC_Watch((Watch Lessons))
+    UC_Progress((Track Progress))
+    UC_ManageCourse((Create/Edit Courses))
+    UC_Publish((Publish/Archive Courses))
+  end
+
+  actorVisitor --> UC_Browse
+  actorVisitor --> UC_Register
+  actorStudent --> UC_Enroll
+  actorStudent --> UC_Watch
+  actorStudent --> UC_Progress
+  actorAdmin --> UC_ManageCourse
+  actorAdmin --> UC_Publish
+

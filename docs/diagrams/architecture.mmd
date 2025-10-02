@@ -1,0 +1,24 @@
+%% Architecture Diagram
+flowchart LR
+  User[Browser]
+
+  subgraph Next[Next.js (App Router)]
+    Pages[UI Pages/Components]
+    APIRoutes[/API Routes/]
+    Auth[better-auth + Prisma Adapter]
+  end
+
+  DB[(PostgreSQL)]
+  Prisma[Prisma Client]
+  S3[(S3 Object Storage)]
+  Stripe[(Stripe)]
+  Resend[(Resend Email)]
+
+  User --> Pages --> APIRoutes
+  APIRoutes --> Prisma --> DB
+  Auth --> Prisma
+  APIRoutes --> Stripe
+  Stripe -->|Webhook| APIRoutes
+  APIRoutes --> S3
+  Auth --> Resend
+

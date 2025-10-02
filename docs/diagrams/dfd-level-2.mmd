@@ -1,0 +1,20 @@
+%% DFD Level 2 - Detailed Enrollment/Payment Flow
+flowchart TB
+  U([User])
+
+  subgraph EnrollmentFlow[3. Enrollment & Payment]
+    S1[Select Course]
+    S2[Create Checkout Session]
+    S3[Redirect to Stripe]
+    S4[Payment]
+    S5[Stripe Webhook]
+    S6[Activate Enrollment]
+  end
+
+  API[/Next.js API Routes/]
+  STRIPE[(Stripe)]
+  DB[(PostgreSQL)]
+
+  U --> S1 --> API --> S2 --> STRIPE --> S3 --> U
+  STRIPE -->|checkout.session.completed| S5 --> API --> S6 --> DB
+

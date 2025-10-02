@@ -1,0 +1,36 @@
+name: Render Diagrams
+
+on:
+  workflow_dispatch: {}
+  push:
+    paths:
+      - 'docs/diagrams/**.mmd'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install deps
+        run: |
+          npm ci
+          npx -y @mermaid-js/mermaid-cli -V
+      - name: Render SVG
+        working-directory: docs/diagrams
+        run: |
+          for f in *.mmd; do npx -y @mermaid-js/mermaid-cli -i "$f" -o "${f%.mmd}.svg"; done
+      - name: Render PNG
+        working-directory: docs/diagrams
+        run: |
+          for f in *.mmd; do npx -y @mermaid-js/mermaid-cli -i "$f" -o "${f%.mmd}.png"; done
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagrams
+          path: |
+            docs/diagrams/*.png
+            docs/diagrams/*.svg
+

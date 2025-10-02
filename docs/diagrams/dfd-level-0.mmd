@@ -1,0 +1,8 @@
+%% DFD Level 0 (Context Diagram)
+flowchart LR
+  extUser([User])
+  system[[Masterji LMS]]
+
+  extUser -->|Browse, Login, Pay, Learn| system
+  system -->|Pages, Content, Receipts, Emails| extUser
+

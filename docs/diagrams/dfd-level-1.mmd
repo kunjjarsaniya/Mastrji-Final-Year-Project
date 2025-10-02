@@ -1,0 +1,23 @@
+%% DFD Level 1
+flowchart TB
+  U([User])
+
+  subgraph LMS[Masterji LMS]
+    P1[1. Authentication]
+    P2[2. Course Catalog]
+    P3[3. Enrollment & Payment]
+    P4[4. Learning & Progress]
+  end
+
+  DB[(PostgreSQL)]
+  STRIPE[(Stripe)]
+  RESEND[(Resend)]
+
+  U --> P1 --> DB
+  U --> P2 --> DB
+  U --> P3 --> STRIPE
+  STRIPE -->|Webhook: checkout.session.completed| P3
+  P3 --> DB
+  U --> P4 --> DB
+  P1 --> RESEND
+

@@ -1,0 +1,32 @@
+%% System Design Overview (Mermaid)
+%% Renders to PNG/SVG via Mermaid CLI or GitHub Action
+flowchart LR
+  subgraph Client
+    U[User (Browser)]
+  end
+
+  subgraph NextApp[Next.js App (App Router)]
+    UI[UI Pages & Components]
+    API[/API Routes/]
+    AUTH[better-auth]
+  end
+
+  subgraph Infra[Services]
+    DB[(PostgreSQL via Prisma)]
+    S3[(Object Storage - S3)]
+    Stripe[(Stripe Payments)]
+    Resend[(Resend Email)]
+  end
+
+  U -->|HTTPS| UI
+  UI -->|fetch| API
+  API -->|ORM| DB
+  AUTH -->|Prisma Adapter| DB
+  API -->|Create Checkout Session| Stripe
+  Stripe -->|Webhook| API
+  API -->|Uploads/Thumbnails| S3
+  AUTH -->|Email OTP| Resend
+
+  classDef svc fill:#eef9ff,stroke:#5aa7e0,stroke-width:1px,color:#0e3a5e;
+  class NextApp,Infra svc;
+

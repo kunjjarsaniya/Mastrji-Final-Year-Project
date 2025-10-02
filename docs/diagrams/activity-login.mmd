@@ -1,0 +1,12 @@
+%% Activity Diagram - OTP Login
+flowchart TD
+  start([Start]) --> enterEmail[Enter Email]
+  enterEmail --> sendOTP[Send OTP via Resend]
+  sendOTP --> receiveOTP{OTP Delivered?}
+  receiveOTP -- No --> resend[Resend OTP] --> sendOTP
+  receiveOTP -- Yes --> inputOTP[User Inputs OTP]
+  inputOTP --> verify{Valid OTP?}
+  verify -- No --> error[Show Error] --> inputOTP
+  verify -- Yes --> createSession[Create Session]
+  createSession --> done([Logged In])
+
