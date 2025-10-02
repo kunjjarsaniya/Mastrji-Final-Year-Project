@@ -21,6 +21,9 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  
+  // Server external packages
+  serverExternalPackages: ['@react-email/render', '@react-email/components', 'resend']
 };
 
 export default nextConfig;
