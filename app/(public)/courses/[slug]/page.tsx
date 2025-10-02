@@ -10,8 +10,7 @@ import { Collapsible } from "@radix-ui/react-collapsible";
 import { Card, CardContent } from "@/components/ui/card";
 import { CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { CheckIcon } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { enrollInCourseAction } from "./actions";
+import { buttonVariants } from "@/components/ui/button";
 import { checkIfCourseBought } from "@/app/data/user/user-is-enrolled";
 import { EnrollmentButton } from "./_components/EnrollmentButton";
 

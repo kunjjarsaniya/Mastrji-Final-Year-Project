@@ -1,17 +1,14 @@
 "use client";
 
 
-import { PublicCourseType } from "@/app/data/course/get-all-courses";
 import { EnrolledCourseType } from "@/app/data/user/get-enrolled-courses";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useConstructUrl } from "@/hooks/use-construct-url";
 import { useCourseProgress } from "@/hooks/use-course-progress";
-// import { Progress } from "@radix-ui/react-progress";
-import { School, TimerIcon } from "lucide-react";
+import { getCourseSidebarDataType } from "@/app/data/course/get-course-sidebar-data";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -22,7 +19,7 @@ interface iAppProps {
 export function CourseProgressCard({ data }: iAppProps) {
     const thumbnailUrl = useConstructUrl(data.Course.fileKey);
     const { totalLesson, completedLessons, progressPercentage } =
-        useCourseProgress({ courseData: data.Course as any });
+        useCourseProgress({ courseData: data.Course as unknown as getCourseSidebarDataType['course'] });
     return (
         <Card className="group relative py-0 gap-0">
             <Badge className="absolute top-2 right-2 z-10">{data.Course.level}</Badge>
@@ -59,7 +56,7 @@ export function CourseProgressCard({ data }: iAppProps) {
                     href={`/dashboard/${data.Course.slug}`}
                     className={buttonVariants({ className: "w-full mt-4" })}
                 >
-                    Watch Curse
+                    Watch Course
                 </Link>
             </CardContent>
         </Card>

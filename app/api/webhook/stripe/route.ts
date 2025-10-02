@@ -81,7 +81,7 @@ export async function POST(req: Request) {
                         },
                         data: {
                             status: "Active",
-                            amout: session.amount_total ? Number(session.amount_total) / 100 : 0,
+                            amount: session.amount_total ? Number(session.amount_total) / 100 : 0,
                             updatedAt: new Date(),
                         },
                     });
@@ -104,7 +104,7 @@ export async function POST(req: Request) {
                     data: {
                         userId: user.id,
                         courseId: courseId,
-                        amout: session.amount_total ? Number(session.amount_total) / 100 : 0,
+                        amount: session.amount_total ? Number(session.amount_total) / 100 : 0,
                         status: "Active",
                     },
                 });
@@ -116,7 +116,7 @@ export async function POST(req: Request) {
                     data: {
                         userId: user.id,
                         courseId: courseId,
-                        amout: session.amount_total ? Number(session.amount_total) / 100 : 0,
+                        amount: session.amount_total ? Number(session.amount_total) / 100 : 0,
                         status: "Active",
                     },
                 });

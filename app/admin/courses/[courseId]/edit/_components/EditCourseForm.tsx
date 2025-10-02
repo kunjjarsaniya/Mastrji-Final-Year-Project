@@ -50,14 +50,6 @@ export function EditCourseForm({ data }: iAppProps) {
             .replace(/^-+|-+$/g, "");
     };
 
-    const handleGenerateSlug = () => {
-        const titleValue = form.getValues("title");
-        if (titleValue) {
-            const slug = slugify(titleValue);
-            form.setValue("slug", slug, { shouldValidate: true });
-        }
-    };
-
     const onSubmit = (values: CourseSchemaType) => {
         startTransition(async () => {
             try {
@@ -165,7 +157,7 @@ export function EditCourseForm({ data }: iAppProps) {
                         <FormItem className="w-full">
                             <FormLabel>Thumbnail Image</FormLabel>
                             <FormControl>
-                                <Uploader onChange={field.onChange} value={field.value} />
+                                <Uploader onChange={field.onChange} value={field.value} fileTypeAccepted="image" />
                                 {/* <Input placeholder="thumbnail url" {...field} /> */}
                             </FormControl>
                             <FormMessage />

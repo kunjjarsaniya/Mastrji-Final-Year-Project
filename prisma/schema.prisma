@@ -158,7 +158,7 @@ model Lesson {
 model Enrollment {
   id String @id @default(uuid())
 
-  amout  Int
+  amount  Int
   status EnrollmentStatus @default(Pending)
 
   createdAt DateTime @default(now())

@@ -8,11 +8,9 @@ import { CSS } from "@dnd-kit/utilities";
 // import { AdminCourseSingularType } from "@/app/data/admin/admin-get-courses";
 // app/admin/courses/[courseId]/edit/_components/CourseStructure.tsx
 import type { AdminCourseSingularType } from "@/app/data/admin/admin-get-course";
-import { string } from "zod";
 import { cn } from "@/lib/utils";
-import { listenKeys } from "better-auth/react";
 import { Collapsible } from "@radix-ui/react-collapsible";
-import { ChevronDown, ChevronRight, FileText, GripVertical, Trash2 } from "lucide-react";
+import { ChevronDown, ChevronRight, FileText, GripVertical } from "lucide-react";
 import { CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";

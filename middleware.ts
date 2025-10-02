@@ -23,7 +23,6 @@
 
 import arcjet, { createMiddleware, detectBot } from "@arcjet/next";
 import { getSessionCookie } from "better-auth/cookies";
-import { request } from "http";
 import { NextRequest, NextResponse } from "next/server";
 
 
