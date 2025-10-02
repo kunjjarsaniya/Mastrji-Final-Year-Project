@@ -30,25 +30,8 @@ export async function middleware(request: NextRequest) {
   if (process.env.NODE_ENV === 'production' &&
     (request.nextUrl.pathname.startsWith('/api/') ||
       request.nextUrl.pathname.startsWith('/admin'))) {
-    const { detectBot } = await import('@arcjet/next');
-    const arcjet = (await import('@arcjet/next')).default;
-
-    const aj = arcjet({
-      key: process.env.ARCJET_KEY!,
-      rules: [
-        detectBot({
-          mode: 'LIVE',
-          // Block all bots except the following
-          allow: [
-            'CATEGORY:SEARCH_ENGINE', // Google, Bing, etc
-            'CATEGORY:MONITOR', // Uptime monitoring services
-            'STRIPE_WEBHOOK' // Allow Stripe webhooks
-          ]
-        })
-      ]
-    });
-
-    const decision = await aj.protect(request);
+    const { protectWithArcJet } = await import('./lib/security');
+    const decision = await protectWithArcJet(request);
 
     // Bots not in the allow list will be blocked
     if (decision.isDenied()) {
