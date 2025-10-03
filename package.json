@@ -1,4 +1,5 @@
 {
+  "json.schemaDownload.enable": false,
   "name": "masterji",
   "version": "0.1.0",
   "private": true,

@@ -17,12 +17,12 @@ interface iAppProps {
 }
 
 export function CourseProgressCard({ data }: iAppProps) {
-    const thumbnailUrl = useConstructUrl(data.Course.fileKey);
+    const thumbnailUrl = useConstructUrl(data.course.fileKey);
     const { totalLesson, completedLessons, progressPercentage } =
-        useCourseProgress({ courseData: data.Course as unknown as getCourseSidebarDataType['course'] });
+        useCourseProgress({ courseData: data.course as unknown as getCourseSidebarDataType['course'] });
     return (
         <Card className="group relative py-0 gap-0">
-            <Badge className="absolute top-2 right-2 z-10">{data.Course.level}</Badge>
+            <Badge className="absolute top-2 right-2 z-10">{data.course.level}</Badge>
 
             <Image
                 width={600}
@@ -34,11 +34,11 @@ export function CourseProgressCard({ data }: iAppProps) {
 
 
             <CardContent className="p-5 border-t border-gray-100">
-                <Link href={`/dashboard/${data.Course.slug}`} className="font-semibold text-lg line-clamp-2 hover:text-primary transition-colors block mb-3">
-                    {data.Course.title}
+                <Link href={`/dashboard/${data.course.slug}`} className="font-semibold text-lg line-clamp-2 hover:text-primary transition-colors block mb-3">
+                    {data.course.title}
                 </Link>
                 <p className="line-clamp-2 text-sm text-gray-600 leading-relaxed mb-4">
-                    {data.Course.smallDescription}
+                    {data.course.smallDescription}
                 </p>
 
                 <div className="space-y-4 mt-5">
@@ -53,7 +53,7 @@ export function CourseProgressCard({ data }: iAppProps) {
                 </div>
 
                 <Link
-                    href={`/dashboard/${data.Course.slug}`}
+                    href={`/dashboard/${data.course.slug}`}
                     className={buttonVariants({ className: "w-full mt-4" })}
                 >
                     Watch Course

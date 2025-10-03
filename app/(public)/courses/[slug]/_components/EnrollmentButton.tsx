@@ -14,17 +14,44 @@ export function EnrollmentButton({ courseId }: { courseId: string }) {
     // console.log(values);
     function onSubmit() {
         startTransition(async () => {
-            const { data: result, error } = await tryCatch(enrollInCourseAction(courseId));
+            // console.log('Starting enrollment process for course:', courseId);
+            
+            try {
+                const { data: result, error } = await tryCatch(enrollInCourseAction(courseId));
+                console.log('Enrollment response:', { result, error });
 
-            if (error) {
-                toast.error("an unexpected error occurred")
-                return;
-            }
+                if (error) {
+                    console.error('Enrollment error:', {
+                        name: error.name,
+                        message: error.message,
+                        stack: error.stack,
+                        ...(error as any).code && { code: (error as any).code },
+                        ...(error as any).type && { type: (error as any).type },
+                    });
+                    toast.error(error.message || "An unexpected error occurred");
+                    return;
+                }
 
-            if (result.status === 'success') {
-                toast.success(result.message);
-            } else if (result.status === "error") {
-                toast.error(result.message);
+                if (result?.status === 'success') {
+                    console.log('Enrollment successful:', result);
+                    toast.success(result.message || 'Successfully enrolled in the course!');
+                } else if (result?.status === 'error') {
+                    console.error('Enrollment failed with error status:', {
+                        message: result.message,
+                        status: result.status,
+                        result: JSON.stringify(result, null, 2)
+                    });
+                    toast.error(result.message || 'Failed to enroll in the course');
+                } else {
+                    console.error('Unexpected response format:', result);
+                    toast.error('Unexpected response from server');
+                }
+            } catch (unexpectedError) {
+                console.error('Unexpected error in enrollment process:', {
+                    error: unexpectedError,
+                    stringified: JSON.stringify(unexpectedError, Object.getOwnPropertyNames(unexpectedError))
+                });
+                toast.error('An unexpected error occurred during enrollment');
             }
         });
     }
