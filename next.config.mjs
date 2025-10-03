@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+import { PrismaPlugin } from 'experimental-prisma-webpack-plugin';
+
 const nextConfig = {
   // Image optimization
   images: {
@@ -9,6 +11,13 @@ const nextConfig = {
       },
     ],
     dangerouslyAllowSVG: true,
+  },
+
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.plugins = [...config.plugins, new PrismaPlugin()];
+    }
+    return config;
   },
 
   // Performance optimizations

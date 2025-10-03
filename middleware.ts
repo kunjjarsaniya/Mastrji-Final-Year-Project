@@ -4,18 +4,11 @@ export const config = {
   matcher: ['/admin/:path*', '/api/:path*'],
 };
 
-// Simple session check
-function getSession(request: NextRequest) {
-  const cookie = request.cookies.get('session');
-  if (!cookie?.value) return null;
-  
-  try {
-    const base64Url = cookie.value.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    return JSON.parse(Buffer.from(base64, 'base64').toString('utf-8'));
-  } catch {
-    return null;
-  }
+// Simple session presence check (tokens may be opaque, don't decode)
+function hasSessionCookie(request: NextRequest) {
+  // Try common cookie keys used by auth libraries
+  const possibleCookieKeys = ['session', 'better-auth.session', 'better-auth.session_token'];
+  return possibleCookieKeys.some((key) => !!request.cookies.get(key)?.value);
 }
 
 export async function middleware(request: NextRequest) {
@@ -30,8 +23,8 @@ export async function middleware(request: NextRequest) {
 
   // Admin route protection
   if (pathname.startsWith('/admin')) {
-    const session = getSession(request);
-    if (!session) {
+    const hasSession = hasSessionCookie(request);
+    if (!hasSession) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
   }
