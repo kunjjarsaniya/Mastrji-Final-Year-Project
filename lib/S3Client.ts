@@ -1,25 +1,37 @@
 import "server-only";
 import { S3Client, ListBucketsCommand } from "@aws-sdk/client-s3";
-import { env } from "./env";
 
-// Enhanced S3 client configuration for production reliability
-export const S3 = new S3Client({
+const env = process.env;
+
+if (!env.AWS_ACCESS_KEY_ID || !env.AWS_SECRET_ACCESS_KEY) {
+    throw new Error('AWS credentials are not properly configured. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.');
+}
+
+const s3Config = {
     region: env.AWS_REGION || "auto",
     endpoint: env.AWS_ENDPOINT_URL_S3,
-    forcePathStyle: false,
-    maxAttempts: 3, // Retry failed requests up to 3 times
-    retryMode: "standard",
+    forcePathStyle: env.NODE_ENV !== 'production', // Use path-style for local, virtual-hosted for production
+    maxAttempts: 3,
+    retryMode: "standard" as const,
     credentials: {
         accessKeyId: env.AWS_ACCESS_KEY_ID,
         secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
     },
-    // Add request timeout
+    // Custom endpoint settings
+    ...(env.NODE_ENV === 'production' ? {
+        // Production-specific settings
+        useAccelerateEndpoint: false,
+    } : {}),
+    // Request handler configuration
     requestHandler: {
-        requestTimeout: 30000, // 30 seconds
+        requestTimeout: 60000, // 60 seconds for production uploads
     },
-    // Enable SSL in production
-    tls: process.env.NODE_ENV === 'production',
-});
+    // Custom user agent for debugging
+    customUserAgent: `mastrji-app/${env.NODE_ENV || 'development'}`,
+};
+
+// Enhanced S3 client configuration for both development and production
+export const S3 = new S3Client(s3Config);
 
 // Add a function to check S3 connectivity
 export async function checkS3Connection() {
@@ -31,11 +43,11 @@ export async function checkS3Connection() {
         return { 
             connected: false, 
             error: error instanceof Error ? error.message : 'Unknown error',
-            details: process.env.NODE_ENV === 'development' ? 
+            details: env.NODE_ENV === 'development' ? 
                 { 
                     region: env.AWS_REGION,
                     endpoint: env.AWS_ENDPOINT_URL_S3,
-                    nodeEnv: process.env.NODE_ENV
+                    nodeEnv: env.NODE_ENV
                 } : undefined
         };
     }
@@ -55,11 +67,11 @@ export async function testS3Upload(file: Blob, key: string) {
         const result = await S3.send(command);
         return { success: true, result };
     } catch (error) {
-        console.error('S3 Upload Test Error:', error);
+        console.error('S3 Upload Test Error:',   error);
         return { 
             success: false, 
             error: error instanceof Error ? error.message : 'Unknown error',
-            details: process.env.NODE_ENV === 'development' ? error : undefined
+            details: env.NODE_ENV === 'development' ? error : undefined
         };
     }
 }

@@ -18,12 +18,12 @@ export async function requireAdmin(returnJson = false) {
     });
 
     // Debug log for production
-    if (process.env.NODE_ENV === 'production') {
-      console.log('requireAdmin: session present?', !!session);
-      if (session?.user) {
-        console.log(`requireAdmin: user id=${session.user.id} role=${session.user.role}`);
-      }
-    }
+    // if (process.env.NODE_ENV === 'production') {
+    //   console.log('requireAdmin: session present?', !!session);
+    //   if (session?.user) {
+    //     console.log(`requireAdmin: user id=${session.user.id} role=${session.user.role}`);
+    //   }
+    // }
 
     if (!session?.user) {
       if (returnJson) throw new UnauthorizedError('Authentication required');
