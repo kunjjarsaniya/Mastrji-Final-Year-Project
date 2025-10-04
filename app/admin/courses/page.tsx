@@ -1,3 +1,6 @@
+// {@ts-expect-error Server Component }
+
+import { requireAdmin } from "@/app/data/admin/require-admin";
 import { adminGetCourses } from "@/app/data/admin/admin-get-courses";
 import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
@@ -5,7 +8,11 @@ import { AdminCourseCard, AdminCourseCardSkeleton } from "./_components/AdminCou
 import { EmptyState } from "@/components/general/EmptyState";
 import { Suspense } from "react";
 
-export default function CoursesPage() {
+export const dynamic = 'force-dynamic'
+
+export default async function CoursesPage() {
+  await requireAdmin();
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -15,43 +22,34 @@ export default function CoursesPage() {
         </Link>
       </div>
       <Suspense fallback={<AdminCourseCardSkeletonLayout/>}>
-        <RenaderCourses />
+        <RenderCourses />
       </Suspense>
     </>
   );
 }
 
-export const dynamic = 'force-dynamic'
-
-
-
-async function RenaderCourses() {
+async function RenderCourses() {
   const data = await adminGetCourses();
 
+  if (!data || data.length === 0) {
+    return (
+      <EmptyState
+        title="No course found"
+        description="create a new course"
+        buttonText="create course"
+        href="/admin/courses/create"
+      />
+    );
+  }
 
   return (
-    <>
-      {data.length === 0 ? (
-        <EmptyState
-          title="No course found"
-          description="create a new course"
-          buttonText="create course"
-          href="/admin/courses/create"
-        />
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-7">
-          {data.map((course) => (
-            <AdminCourseCard key={course.id} data={course} />
-          ))}
-        </div>
-      )
-      }
-    </>
-  )
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-7">
+      {data.map((course) => (
+        <AdminCourseCard key={course.id} data={course} />
+      ))}
+    </div>
+  );
 }
-
-
-
 
 function AdminCourseCardSkeletonLayout() {
   return (
@@ -62,10 +60,3 @@ function AdminCourseCardSkeletonLayout() {
     </div>
   );
 }
-
-
-
-
-
-
-

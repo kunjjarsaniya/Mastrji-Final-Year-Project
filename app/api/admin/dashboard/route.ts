@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import { adminGetDashboardStats } from '@/app/data/admin/admin-get-dashboard-state';
+import { requireAdmin } from "@/app/data/admin/require-admin";
 
 export async function GET() {
   try {
+    await requireAdmin();
     const stats = await adminGetDashboardStats();
     return NextResponse.json(stats);
   } catch (error) {

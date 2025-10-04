@@ -7,6 +7,8 @@ import { resend } from "./resend";
 import { admin } from "better-auth/plugins";
 // import { verify } from "crypto";
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
@@ -30,4 +32,7 @@ export const auth = betterAuth({
   }),
   admin(),
 ],
+  url: isProd
+    ? 'https://mastrji.vercel.app' // your production URL
+    : 'http://localhost:3000',     // your local URL
 });

@@ -10,10 +10,14 @@ import { adminGetRecentCourses } from "../data/admin/admin-get-recent-courses"
 import { AdminCourseCard, AdminCourseCardSkeleton } from "./courses/_components/AdminCourseCard"
 import { Suspense } from "react"
 import { headers } from "next/headers"
+import { requireAdmin } from "@/app/data/admin/require-admin";
+
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+
+    await requireAdmin();
   const session = await auth.api.getSession({
     headers: await headers(),
   })

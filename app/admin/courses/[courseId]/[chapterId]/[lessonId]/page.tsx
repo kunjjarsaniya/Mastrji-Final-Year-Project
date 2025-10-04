@@ -1,3 +1,4 @@
+import { requireAdmin } from "@/app/data/admin/require-admin";
 import { adminGetLesson } from "@/app/data/admin/admin-get-lesson";
 // import { LessonForm } from "../_components/LessonForm";
 import { LessonForm } from "./_components/LessonForm";
@@ -10,6 +11,7 @@ type Params = Promise<{
 
 export default async function LessonIdPage({ params }: { params: Params }) {
   const { chapterId, courseId, lessonId } = await params;
+  await requireAdmin();
   const lesson = await adminGetLesson(lessonId);
  
   return <LessonForm data={lesson} chapterId={chapterId} courseId={courseId} />;
