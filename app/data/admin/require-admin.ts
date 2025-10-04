@@ -16,6 +16,16 @@ export async function requireAdmin(returnJson = false) {
       headers: await headers(),
     });
 
+    // TEMP DEBUG: log minimal session info to help troubleshoot admin access
+    try {
+      console.log('requireAdmin: session present?', !!session);
+      if (session?.user) {
+        console.log(`requireAdmin: user id=${session.user.id} role=${session.user.role}`);
+      }
+    } catch (e) {
+      // ignore logging errors
+    }
+
     if (!session?.user) {
       console.warn('No active session found');
       if (returnJson) {

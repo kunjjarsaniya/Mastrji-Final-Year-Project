@@ -128,7 +128,7 @@ export function Navbar() {
                                 <Link href="/login" className={buttonVariants({ variant: "secondary" })}>
                                     Login
                                 </Link>
-                                <Link href="/register" className={buttonVariants()}> {/* Changed href to /register for "Get Started" */}
+                                <Link href="/login" className={buttonVariants()}> {/* Changed href to /register for "Get Started" */}
                                     Get Started
                                 </Link>
                             </>
