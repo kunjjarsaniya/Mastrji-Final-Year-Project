@@ -17,10 +17,9 @@ process.env.NODE_OPTIONS = '--no-deprecation --max-old-space-size=4096';
 process.env.NEXT_PRIVATE_SKIP_ESLINT = '1';
 process.env.NEXT_PRIVATE_SKIP_TYPESCRIPT = '1';
 
-// Ensure .env file exists
+// Ensure .env file exists, but continue if the environment provides variables (e.g., Vercel)
 if (!fs.existsSync(path.join(__dirname, '.env'))) {
-  console.error('❌ Error: .env file not found. Please create one based on .env.example');
-  process.exit(1);
+  console.warn('⚠️  Warning: .env file not found. If running on Vercel, set env vars in project settings.');
 }
 
 // Function to run a command with Windows-specific optimizations

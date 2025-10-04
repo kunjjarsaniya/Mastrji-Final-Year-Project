@@ -11,9 +11,25 @@ process.env.NODE_ENV = 'production';
 process.env.NEXT_PRIVATE_SKIP_ENV_VALIDATION = '1';
 
 // Ensure .env file exists
-if (!fs.existsSync(path.join(__dirname, '.env'))) {
-  console.error('❌ Error: .env file not found. Please create one based on .env.example');
-  process.exit(1);
+// Ensure local .env file exists, but don't fail on platforms that provide env vars (e.g., Vercel)
+const envFilePath = path.join(__dirname, '.env');
+if (!fs.existsSync(envFilePath)) {
+  console.warn('⚠️  Warning: .env file not found.');
+  console.warn('If you are running this build on a platform like Vercel, provide required environment variables in the project settings.');
+
+  // Read .env.example to show expected vars and warn about missing critical ones
+  try {
+    const example = fs.readFileSync(path.join(__dirname, '.env.example'), 'utf8');
+    const expected = example.split(/\r?\n/).map(l => l.split('=')[0].trim()).filter(Boolean);
+    const missing = expected.filter(k => k && !process.env[k]);
+    if (missing.length > 0) {
+      console.warn('⚠️  The following environment variables are not set in the environment and there is no local .env:');
+      missing.forEach(v => console.warn(`  - ${v}`));
+      console.warn('Please add them in your Vercel project settings (Environment Variables) or create a local .env for local builds.');
+    }
+  } catch (e) {
+    // ignore if .env.example is missing
+  }
 }
 
 // Function to run a command with better error handling
