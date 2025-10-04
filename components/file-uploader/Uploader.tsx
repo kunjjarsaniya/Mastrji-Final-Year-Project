@@ -42,13 +42,12 @@ export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
         progress: 0,
         isDeleting: false,
         fileType: fileTypeAccepted,
-        key: value,
         objectUrl: value ? fileUrl || "" : "",
     });
 
     const uploadFile = useCallback(
         async (file: File) => {
-            setFileState((prev) => ({
+            setFileState(prev => ({
                 ...prev,
                 uploading: true,
                 progress: 0,
@@ -72,30 +71,44 @@ export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
 
                 if (!presignedResponse.ok) {
                     const error = await presignedResponse.text();
-                    console.error("Failed to get presigned URL:", error);
-                    throw new Error("Failed to get upload URL");
+                    throw new Error(`Upload failed: ${error}`);
                 }
 
-                const { presignedUrl, key } = await presignedResponse.json();
+                const { presignedUrl, key, contentType } = await presignedResponse.json();
 
                 // Upload the file directly to S3 using the pre-signed URL
-                const uploadResponse = await fetch(presignedUrl, {
-                    method: "PUT",
-                    body: file,
-                    headers: {
-                        "Content-Type": file.type,
-                        "Content-Length": file.size.toString(),
-                    },
+                const xhr = new XMLHttpRequest();
+                
+                await new Promise<void>((resolve, reject) => {
+                    xhr.upload.onprogress = (event) => {
+                        if (event.lengthComputable) {
+                            const progress = Math.round((event.loaded / event.total) * 100);
+                            setFileState(prev => ({
+                                ...prev,
+                                progress,
+                            }));
+                        }
+                    };
+
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            resolve();
+                        } else {
+                            reject(new Error(`Upload failed with status ${xhr.status}`));
+                        }
+                    };
+
+                    xhr.onerror = () => {
+                        reject(new Error('Network error during upload'));
+                    };
+
+                    xhr.open('PUT', presignedUrl, true);
+                    xhr.setRequestHeader('Content-Type', contentType || file.type);
+                    xhr.send(file);
                 });
 
-                if (!uploadResponse.ok) {
-                    const error = await uploadResponse.text();
-                    console.error("Upload failed:", error);
-                    throw new Error("Upload failed");
-                }
-
                 // Update the file state with the new file
-                setFileState((prev) => ({
+                setFileState(prev => ({
                     ...prev,
                     progress: 100,
                     key: key,
@@ -105,15 +118,13 @@ export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
                 }));
 
                 // Call the onChange callback with the file key
-                if (onChange) {
-                    onChange(key);
-                }
+                onChange?.(key);
                 toast.success("File uploaded successfully");
             } catch (error) {
-                console.error("Upload failed:", error);
-                toast.error("Something went wrong during upload");
+                console.error("Upload error:", error);
+                toast.error(error instanceof Error ? error.message : "Failed to upload file");
 
-                setFileState((prev) => ({
+                setFileState(prev => ({
                     ...prev,
                     progress: 0,
                     error: true,
