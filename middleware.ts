@@ -8,7 +8,27 @@ export const config = {
 function hasSessionCookie(request: NextRequest) {
   // Try common cookie keys used by auth libraries
   const possibleCookieKeys = ['session', 'better-auth.session', 'better-auth.session_token'];
-  return possibleCookieKeys.some((key) => !!request.cookies.get(key)?.value);
+
+  // First try the NextRequest cookies API (works in most cases)
+  for (const key of possibleCookieKeys) {
+    if (!!request.cookies.get(key)?.value) return true;
+  }
+
+  // Fallback: inspect the raw Cookie header. Some cookie names include
+  // dots or are URL-encoded which can make them miss in the cookies API
+  // in certain edge/runtime environments. This simple substring check
+  // helps detect those cases without decoding the cookie value.
+  const cookieHeader = request.headers.get('cookie') || '';
+  if (!cookieHeader) return false;
+
+  for (const key of possibleCookieKeys) {
+    // plain and URL-encoded variants
+    if (cookieHeader.includes(`${key}=`)) return true;
+    const encoded = encodeURIComponent(key);
+    if (encoded !== key && cookieHeader.includes(`${encoded}=`)) return true;
+  }
+
+  return false;
 }
 
 export async function middleware(request: NextRequest) {
