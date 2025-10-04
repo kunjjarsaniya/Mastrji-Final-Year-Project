@@ -11,6 +11,8 @@ import { AdminCourseCard, AdminCourseCardSkeleton } from "./courses/_components/
 import { Suspense } from "react"
 import { headers } from "next/headers"
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
