@@ -1,7 +1,11 @@
-// build-with-prisma.js
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+// build-with-prisma.js (ESM compatible)
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log('🚀 Starting build process...');
 
@@ -55,12 +59,12 @@ function runCommand(command, errorMessage) {
       LOCALAPPDATA: sandboxHome
     };
 
-    execSync(command, { 
-      stdio: 'inherit',
-      env,
-      windowsHide: true,
-      cwd: __dirname
-    });
+      execSync(command, {
+        stdio: 'inherit',
+        env,
+        windowsHide: true,
+        cwd: __dirname
+      });
     return true;
   } catch (error) {
     console.error(`❌ ${errorMessage || 'Command failed'}:`, error.message);

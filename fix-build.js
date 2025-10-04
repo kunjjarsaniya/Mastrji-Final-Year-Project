@@ -1,7 +1,11 @@
 // fix-build.js - Comprehensive build fix script
-const { execSync } = require('child_process');
-const fs = require('fs');
-const path = require('path');
+import { execSync } from 'child_process';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 console.log('🔧 Starting comprehensive build fix...');
 
@@ -43,7 +47,7 @@ const nextConfig = {
     // Add Prisma plugin only for server-side builds
     if (isServer) {
       try {
-        const { PrismaPlugin } = require('experimental-prisma-webpack-plugin');
+  const { PrismaPlugin } = await import('experimental-prisma-webpack-plugin');
         config.plugins = [...config.plugins, new PrismaPlugin()];
       } catch (error) {
         console.log('⚠️  Prisma plugin not available, skipping...');

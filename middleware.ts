@@ -21,6 +21,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // Avoid running middleware's security fetch for the security route itself
+  // to prevent recursive middleware -> API -> middleware loops.
+  if (pathname === '/api/security') {
+    return NextResponse.next();
+  }
+
   // Admin route protection
   if (pathname.startsWith('/admin')) {
     const hasSession = hasSessionCookie(request);
