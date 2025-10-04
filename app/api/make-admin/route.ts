@@ -1,12 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import { NextResponse } from 'next/server';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 export async function POST() {
   try {
     const email = 'kunjjarsaniya07@gmail.com';
-    
+
     const user = await prisma.user.update({
       where: { email },
       data: { role: 'admin' },
@@ -23,7 +21,5 @@ export async function POST() {
       { success: false, error: 'Failed to update user role' },
       { status: 500 }
     );
-  } finally {
-    await prisma.$disconnect();
   }
 }

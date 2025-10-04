@@ -172,3 +172,29 @@ public/worker-*.js.map
 # Generated files
 /generated
 /auto-generated
+
+# Windows system directories that cause permission issues
+**/Application Data/**
+**/AppData/**
+**/Local Settings/**
+**/Cookies/**
+**/History/**
+**/Temporary Internet Files/**
+**/Windows/**
+**/System32/**
+**/Program Files/**
+**/Program Files (x86)/**
+**/ProgramData/**
+**/Users/ABC/Application Data/**
+**/Users/ABC/AppData/**
+**/Users/ABC/Local Settings/**
+**/Users/ABC/Cookies/**
+**/Users/ABC/History/**
+**/Users/ABC/Temporary Internet Files/**
+
+# Build artifacts
+.next/cache/
+.next/static/
+.next/server/
+.next/trace
+.next/traces
