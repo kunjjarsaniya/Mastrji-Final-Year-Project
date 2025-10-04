@@ -10,24 +10,26 @@ if (!env.AWS_ACCESS_KEY_ID || !env.AWS_SECRET_ACCESS_KEY) {
 const s3Config = {
     region: env.AWS_REGION || "auto",
     endpoint: env.AWS_ENDPOINT_URL_S3,
-    forcePathStyle: env.NODE_ENV !== 'production', // Use path-style for local, virtual-hosted for production
+    forcePathStyle: true, // Required for S3-compatible storage
     maxAttempts: 3,
     retryMode: "standard" as const,
     credentials: {
-        accessKeyId: env.AWS_ACCESS_KEY_ID,
-        secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
+        accessKeyId: env.AWS_ACCESS_KEY_ID!,
+        secretAccessKey: env.AWS_SECRET_ACCESS_KEY!,
     },
-    // Custom endpoint settings
-    ...(env.NODE_ENV === 'production' ? {
-        // Production-specific settings
-        useAccelerateEndpoint: false,
-    } : {}),
+    // S3 specific settings
+    s3ForcePathStyle: true,
+    signatureVersion: 'v4',
     // Request handler configuration
     requestHandler: {
-        requestTimeout: 60000, // 60 seconds for production uploads
+        requestTimeout: 60000, // 60 seconds for uploads
     },
-    // Custom user agent for debugging
+    // Custom user agent
     customUserAgent: `mastrji-app/${env.NODE_ENV || 'development'}`,
+    // CORS settings
+    ...(env.NODE_ENV === 'development' && {
+        sslEnabled: false,
+    }),
 };
 
 // Enhanced S3 client configuration for both development and production

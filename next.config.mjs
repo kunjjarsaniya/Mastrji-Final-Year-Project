@@ -1,16 +1,33 @@
 /** @type {import('next').NextConfig} */
-import { PrismaPlugin } from '@prisma/nextjs-monorepo-workaround-plugin'
+import { PrismaPlugin } from '@prisma/nextjs-monorepo-workflow-plugin'
 
 const nextConfig = {
   // Image optimization
   images: {
     remotePatterns: [
       {
-        hostname: "masteji-mordern-lms.t3.storageapi.dev",
-        protocol: "https",
+        protocol: 'https',
+        hostname: '**', // Allow all hostnames
       },
     ],
     dangerouslyAllowSVG: true,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+
+  // CORS headers
+  async headers() {
+    return [
+      {
+        // Apply these headers to all routes
+        source: '/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Credentials', value: 'true' },
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
+          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version' },
+        ],
+      },
+    ]
   },
 
   webpack: (config, { isServer, webpack }) => {
