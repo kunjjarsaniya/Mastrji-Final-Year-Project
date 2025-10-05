@@ -10,7 +10,7 @@ export async function getEnrolledCourses() {
         userId: user.id,
     },
     select: {
-        course: {
+        Course: {
             select: {
                 id: true,
                 smallDescription: true,

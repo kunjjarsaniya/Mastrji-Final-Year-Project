@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/:path*'],
+  matcher: ['/admin/:path*', '/api/:path*', '/dashboard/:path*'],
 };
 
 // Simple session presence check (tokens may be opaque, don't decode)
@@ -49,6 +49,14 @@ export async function middleware(request: NextRequest) {
 
   // Admin route protection
   if (pathname.startsWith('/admin')) {
+    const hasSession = hasSessionCookie(request);
+    if (!hasSession) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
+  // Dashboard route protection
+  if (pathname.startsWith('/dashboard')) {
     const hasSession = hasSessionCookie(request);
     if (!hasSession) {
       return NextResponse.redirect(new URL('/login', request.url));

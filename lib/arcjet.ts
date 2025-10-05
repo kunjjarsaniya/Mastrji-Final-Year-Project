@@ -23,6 +23,8 @@ export {
 
 
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 export default arcjet({
     key: env.ARCJET_KEY,
 
@@ -32,7 +34,7 @@ export default arcjet({
     
     rules: [
         shield({
-            mode: "LIVE",
+            mode: isDevelopment ? "DRY_RUN" : "LIVE",
         }),
     ],
 });

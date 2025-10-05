@@ -13,7 +13,7 @@ export default async function DashboardPage() {
   // Filter out enrolled courses from available courses
   const availableCourses = courses.filter(
     course => !enrolledCourses.some(
-      ({ course: enrolled }) => enrolled.id === course.id
+      ({ Course: enrolled }) => enrolled.id === course.id
     )
   );
 
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {enrolledCourses.map((enrollment) => (
-              <CourseProgressCard key={enrollment.course.id} data={enrollment} /> 
+              <CourseProgressCard key={enrollment.Course.id} data={enrollment} /> 
             ))}
 
           </div>

@@ -146,21 +146,23 @@ import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import arcjet, { detectBot, protectSignup, slidingWindow } from "@/lib/arcjet";
 
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const emailOptions = {
-  mode: "LIVE", // will block requests. Use "DRY_RUN" to log only
+  mode: isDevelopment ? "DRY_RUN" : "LIVE", // Use DRY_RUN in development to avoid delays
   // Block emails that are disposable, invalid, or have no MX records
   block: ["DISPOSABLE", "INVALID", "NO_MX_RECORDS"],
 } satisfies EmailOptions;
 
 const botOptions = {
-  mode: "LIVE",
+  mode: isDevelopment ? "DRY_RUN" : "LIVE",
   // configured with a list of bots to allow from
   // https://arcjet.com/bot-list
   allow: [], // prevents bots from submitting the form
 } satisfies BotOptions;
 
 const rateLimitOptions = {
-  mode: "LIVE",
+  mode: isDevelopment ? "DRY_RUN" : "LIVE",
   interval: "2m", // counts requests over a 2 minute sliding window
   max: 5, // allows 5 submissions within the window
 } satisfies SlidingWindowRateLimitOptions<[]>;
@@ -216,10 +218,23 @@ async function protect(req: NextRequest): Promise<ArcjetDecision> {
 
 const authHandlers = toNextJsHandler(auth.handler);
 
-export const { GET } = authHandlers;
+// Skip Arcjet protection for GET requests in development
+export const GET = async (req: NextRequest) => {
+  if (isDevelopment) {
+    return authHandlers.GET(req);
+  }
+  
+  // In production, you might want to add some protection here
+  return authHandlers.GET(req);
+};
 
 // Wrap the POST handler with Arcjet protections
 export const POST = async (req: NextRequest) => {
+  // Skip Arcjet protection in development to avoid delays
+  if (isDevelopment) {
+    return authHandlers.POST(req);
+  }
+
   const decision = await protect(req);
 
   console.log("Arcjet Decision:", decision);

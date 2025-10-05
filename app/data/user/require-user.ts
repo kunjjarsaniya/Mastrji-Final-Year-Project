@@ -28,13 +28,25 @@ import { redirect } from "next/navigation";
 import { cache } from "react";
 
 export const requireUser = cache(async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
+  // In development, add timeout to prevent hanging
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('Authentication timeout')), 5000);
   });
 
-  if (!session) {
+  try {
+    const sessionPromise = auth.api.getSession({
+      headers: await headers(),
+    });
+
+    const session = await Promise.race([sessionPromise, timeoutPromise]);
+
+    if (!session) {
+      return redirect("/login");
+    }
+
+    return session.user;
+  } catch (error) {
+    console.error('Authentication error:', error);
     return redirect("/login");
   }
-
-  return session.user;
 });
