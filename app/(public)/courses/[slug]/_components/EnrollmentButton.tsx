@@ -18,39 +18,45 @@ export function EnrollmentButton({ courseId }: { courseId: string }) {
             
             try {
                 const { data: result, error } = await tryCatch(enrollInCourseAction(courseId));
-                console.log('Enrollment response:', { result, error });
+                // console.log('Enrollment response:', { result, error });
 
                 if (error) {
-                    console.error('Enrollment error:', {
-                        name: error.name,
-                        message: error.message,
-                        stack: error.stack,
-                        ...(error as any).code && { code: (error as any).code },
-                        ...(error as any).type && { type: (error as any).type },
-                    });
+                    // console.error('Enrollment error:', {
+                        // name: error.name,
+                        // message: error.message,
+                        // stack: error.stack,
+                        // ...(error as any).code && { code: (error as any).code },
+                        // ...(error as any).type && { type: (error as any).type },
+                    // });
                     toast.error(error.message || "An unexpected error occurred");
                     return;
                 }
 
                 if (result?.status === 'success') {
-                    console.log('Enrollment successful:', result);
+                    // console.log('Enrollment successful:', result);
                     toast.success(result.message || 'Successfully enrolled in the course!');
+                    
+                    // If there's a redirect URL, navigate to it
+                    if (result.redirectUrl) {
+                        window.location.href = result.redirectUrl;
+                        return;
+                    }
                 } else if (result?.status === 'error') {
-                    console.error('Enrollment failed with error status:', {
-                        message: result.message,
-                        status: result.status,
-                        result: JSON.stringify(result, null, 2)
-                    });
+                    // console.error('Enrollment failed with error status:', {
+                        // message: result.message,
+                        // status: result.status,
+                        // result: JSON.stringify(result, null, 2)
+                    // });
                     toast.error(result.message || 'Failed to enroll in the course');
                 } else {
-                    console.error('Unexpected response format:', result);
+                    // console.error('Unexpected response format:', result);
                     toast.error('Unexpected response from server');
                 }
             } catch (unexpectedError) {
-                console.error('Unexpected error in enrollment process:', {
-                    error: unexpectedError,
-                    stringified: JSON.stringify(unexpectedError, Object.getOwnPropertyNames(unexpectedError))
-                });
+                // console.error('Unexpected error in enrollment process:', {
+                    // error: unexpectedError,
+                    // stringified: JSON.stringify(unexpectedError, Object.getOwnPropertyNames(unexpectedError))
+                // });
                 toast.error('An unexpected error occurred during enrollment');
             }
         });

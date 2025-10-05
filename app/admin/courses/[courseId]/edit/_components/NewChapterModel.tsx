@@ -27,15 +27,15 @@ export function NewChapterModel({ courseId }: { courseId: string }) {
 
 
     async function onSubmit(values: ChapterSchemaType) {
-        console.log('Form submitted with values:', values);
+        // console.log('Form submitted with values:', values);
         startTransition(async () => {
             try {
-                console.log('Starting form submission');
+                // console.log('Starting form submission');
                 const { data: result, error } = await tryCatch(createChapter({ ...values, courseId }));
-                console.log('Server response:', { result, error });
+                // console.log('Server response:', { result, error });
 
                 if (error) {
-                    console.error('Error in form submission:', error);
+                    // console.error('Error in form submission:', error);
                     toast.error("An error occurred. Please try again later");
                     return;
                 }

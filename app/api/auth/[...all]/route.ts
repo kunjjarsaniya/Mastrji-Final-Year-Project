@@ -237,7 +237,7 @@ export const POST = async (req: NextRequest) => {
 
   const decision = await protect(req);
 
-  console.log("Arcjet Decision:", decision);
+  // console.log("Arcjet Decision:", decision);
 
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {

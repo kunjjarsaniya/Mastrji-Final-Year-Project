@@ -1,5 +1,5 @@
 {
-  "last_reminder": 0,
+  "last_reminder": 1759649538257,
   "cached_at": 1759639486652,
   "version": "6.16.3",
   "cli_path": "E:\\Mastrji-Final-Year-Project\\node_modules\\prisma\\build\\index.js",
@@ -29,7 +29,7 @@
   },
   "product": "prisma",
   "cli_install_type": "local",
-  "local_timestamp": "2025-10-04T20:01:48+05:30",
+  "local_timestamp": "2025-10-05T13:02:18+05:30",
   "project_hash": "08bbd867",
   "cli_path_hash": "03995c81",
   "endpoint": "https://checkpoint.prisma.io",

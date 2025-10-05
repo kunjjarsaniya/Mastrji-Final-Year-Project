@@ -7,10 +7,10 @@ async function makeAdmin(email : string) {
       where: { email },
       data: { role: 'ADMIN' },
     });
-    console.log(`✅ User ${email} is now an admin`);
+    // console.log(`✅ User ${email} is now an admin`);
     return user;
   } catch (error) {
-    console.error('❌ Error making user admin:', error);
+    // console.error('❌ Error making user admin:', error);
     throw error;
   } finally {
     await prisma.$disconnect();

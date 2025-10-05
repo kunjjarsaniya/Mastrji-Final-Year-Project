@@ -8,8 +8,10 @@ export async function getEnrolledCourses() {
   const data = await prisma.enrollment.findMany({
     where: {
         userId: user.id,
+        status: 'Active', // Only return active enrollments
     },
     select: {
+        status: true, // Include status in the result for clarity
         Course: {
             select: {
                 id: true,
